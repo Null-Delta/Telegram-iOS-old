@@ -10404,8 +10404,8 @@ public final class PeerInfoScreenImpl: ViewController, PeerInfoScreen, KeyShortc
         
         if !chatNavigationStack.isEmpty {
             self.navigationBar?.backButtonNode.isGestureEnabled = true
-            self.navigationBar?.backButtonNode.activated = { [weak self] gesture, _ in
-                guard let strongSelf = self, let backButtonNode = strongSelf.navigationBar?.backButtonNode, let navigationController = strongSelf.navigationController as? NavigationController else {
+            self.navigationBar?.backButtonNode.activated = { [weak self] gesture, _, isFinish in
+                guard let strongSelf = self, let backButtonNode = strongSelf.navigationBar?.backButtonNode, let navigationController = strongSelf.navigationController as? NavigationController, isFinish else {
                     gesture.cancel()
                     return
                 }

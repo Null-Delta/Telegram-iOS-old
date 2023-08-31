@@ -64,6 +64,9 @@ private func cancelOtherGestures(gesture: ContextGesture, view: UIView) {
 
 public final class ContextGesture: UIGestureRecognizer, UIGestureRecognizerDelegate {
     public var beginDelay: Double = 0.12
+    public var duration: Double = 0.2
+    public var isAnimating: Bool = false
+    
     public var activateOnTap: Bool = false
     private var currentProgress: CGFloat = 0.0
     private var delayTimer: Timer?
@@ -78,7 +81,8 @@ public final class ContextGesture: UIGestureRecognizer, UIGestureRecognizerDeleg
     public var externalEnded: (((UIView?, CGPoint)?) -> Void)?
     public var activatedAfterCompletion: ((CGPoint, Bool) -> Void)?
     public var cancelGesturesOnActivation: (() -> Void)?
-    
+    public var onAnimationStart: (() -> Void)?
+
     override public init(target: Any?, action: Selector?) {
         super.init(target: target, action: action)
         
@@ -135,8 +139,9 @@ public final class ContextGesture: UIGestureRecognizer, UIGestureRecognizerDeleg
                     return
                 }
                 strongSelf.isValidated = true
+                strongSelf.onAnimationStart?()
                 if strongSelf.animator == nil {
-                    strongSelf.animator = DisplayLinkAnimator(duration: 0.2, from: 0.0, to: 1.0, update: { value in
+                    strongSelf.animator = DisplayLinkAnimator(duration: strongSelf.duration, from: 0.0, to: 1.0, update: { value in
                         guard let strongSelf = self else {
                             return
                         }

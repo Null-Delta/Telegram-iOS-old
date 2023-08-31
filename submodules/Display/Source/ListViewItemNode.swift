@@ -91,7 +91,8 @@ open class ListViewItemNode: ASDisplayNode, AccessibilityFocusableNode {
     public internal(set) final var index: Int?
     
     public var isHighlightedInOverlay: Bool = false
-    
+    public var isArchive: Bool = false
+
     public private(set) var accessoryItemNode: ListViewAccessoryItemNode?
 
     func setAccessoryItemNode(_ accessoryItemNode: ListViewAccessoryItemNode?, leftInset: CGFloat, rightInset: CGFloat) {

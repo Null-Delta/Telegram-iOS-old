@@ -1247,7 +1247,7 @@ public final class ChatListNode: ListView {
         self.autoSetReady = autoSetReady
         
         let isMainTab = chatListFilter == nil && location == .chatList(groupId: .root)
-        
+                
         var isSelecting = false
         if case .peers(_, true, _, _, _, _) = mode {
             isSelecting = true
@@ -2873,6 +2873,8 @@ public final class ChatListNode: ListView {
             return strongSelf.isSelectionGestureEnabled
         }
         self.view.addGestureRecognizer(selectionRecognizer)
+        
+        ArchiveShowProvider.addObserver(observer: self)
     }
     
     deinit {
@@ -2930,15 +2932,13 @@ public final class ChatListNode: ListView {
             }
         })
         if isHiddenItemVisible && !self.currentState.hiddenItemShouldBeTemporaryRevealed {
-            if self.hapticFeedback == nil {
-                self.hapticFeedback = HapticFeedback()
-            }
-            self.hapticFeedback?.impact(.medium)
             self.updateState { state in
                 var state = state
                 state.hiddenItemShouldBeTemporaryRevealed = true
                 return state
             }
+            
+            ArchiveShowProvider.notify()
         }
     }
     
@@ -3382,6 +3382,7 @@ public final class ChatListNode: ListView {
             
             additionalScrollDistance += insetDelta
         }
+        
         self.ignoreStopScrolling = true
         self.transaction(deleteIndices: [], insertIndicesAndItems: [], updateIndicesAndItems: [], options: options, scrollToItem: nil, additionalScrollDistance: additionalScrollDistance, updateSizeAndInsets: updateSizeAndInsets, stationaryItemRange: nil, updateOpaqueState: nil, completion: { _ in })
         self.ignoreStopScrolling = false
@@ -3952,4 +3953,26 @@ public class ChatHistoryListSelectionRecognizer: UIPanGestureRecognizer {
 
 func hideChatListContacts(context: AccountContext) {
     let _ = ApplicationSpecificNotice.setDisplayChatListContacts(accountManager: context.sharedContext.accountManager).start()
+}
+
+extension ChatListNode: ArchiveShowObserverProtocol {
+    public func archiveSizeChanged() {
+        
+    }
+    
+    public func archiveShown() {
+        
+    }
+    
+    public func archiveNodeCreated(node: ASDisplayNode) {
+        self.scroller.contentOffset.y += 76
+    }
+    
+    public func archiveNodeHidden(node: ASDisplayNode) {
+        
+    }
+    
+    public func scrollChanged(offset: CGFloat) {
+        
+    }
 }
